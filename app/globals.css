@@ -87,3 +87,49 @@ footer { background:#151713; color:white; border-top:1px solid #343631; min-heig
 @media (max-width:700px){.topbar{height:66px;padding:0 20px}.top-status{display:none}.share-btn{padding:9px;width:38px;height:38px;justify-content:center;font-size:0}.hero{padding:78px 20px 350px;min-height:auto}.hero h1{font-size:clamp(54px,18vw,82px);line-height:.83}.hero h1 em{padding-left:0}.hero>p{width:100%;font-size:14px;margin-top:28px}.hero-actions{align-items:flex-start;flex-direction:column;gap:14px}.hero-orbit{width:280px;height:280px;top:auto;bottom:34px;right:calc(50% - 140px)}.inventory-section{padding:0 16px 70px;border-radius:24px 24px 0 0}.stats-row{grid-template-columns:repeat(2,1fr);transform:translateY(-28px)}.stat-card{min-height:108px;padding:18px}.stat-card strong{font-size:30px}.inventory-head{align-items:flex-start;flex-direction:column;gap:20px}.search-wrap{width:100%}.inventory-grid{grid-template-columns:repeat(2,1fr);gap:9px}.product-visual{height:150px}.item-copy{padding:14px;min-height:113px}.add-card{min-height:300px}.scanner-modal{padding:17px}.camera-stage{height:300px}.share-modal{padding:34px 20px 20px}footer{padding:30px 20px;gap:15px;flex-wrap:wrap}footer p{order:3;width:100%}}
 @media (max-width:390px){.inventory-grid{grid-template-columns:1fr 1fr}.product-visual{height:138px}.item-copy h3{font-size:12px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.hero-orbit{transform:none}.cursor-glow{display:none}}
+
+/* Smart-fridge chassis */
+html { background:#aeb0b0; }
+body { background:repeating-linear-gradient(90deg,#a9abaa 0,#c6c8c7 1px,#b9bbba 3px,#d0d1d0 4px); padding:18px; }
+.app-shell { max-width:1540px; margin:auto; min-height:calc(100vh - 36px); border:1px solid #777a78; border-radius:36px; background:linear-gradient(105deg,#d7d8d6 0%,#aeb0af 24%,#e2e3e1 51%,#a5a8a6 79%,#d0d2d0 100%); box-shadow:0 35px 90px rgba(20,23,21,.35),inset 0 1px rgba(255,255,255,.85),inset 0 -2px rgba(0,0,0,.22); }
+.app-shell:before { content:""; position:absolute; top:81px; bottom:0; left:50%; width:2px; z-index:0; background:linear-gradient(90deg,rgba(0,0,0,.12),rgba(255,255,255,.45),rgba(0,0,0,.18)); box-shadow:0 0 18px rgba(0,0,0,.18); }
+.app-shell:after { content:"NEURO COOLING SYSTEM"; position:absolute; right:30px; bottom:24px; font:650 7px var(--font-geist-mono),monospace; letter-spacing:.2em; color:rgba(17,19,15,.42); writing-mode:vertical-rl; }
+.topbar { height:82px; padding:0 38px; max-width:none; border-bottom:1px solid rgba(40,43,40,.28); box-shadow:0 1px rgba(255,255,255,.65); }
+.topbar .brand { padding:9px 15px; border-radius:8px; color:#252825; background:linear-gradient(#dfe0de,#a9abaa); border:1px solid #8c8f8d; box-shadow:inset 0 1px white,0 2px 5px rgba(0,0,0,.15); text-shadow:0 1px rgba(255,255,255,.6); }
+.share-btn { background:linear-gradient(#e2e3e1,#b4b6b4); box-shadow:inset 0 1px white,0 2px 6px rgba(0,0,0,.12); }
+.top-status { padding:8px 13px; color:#bde92d; background:#20231f; border:3px solid #7d807e; border-radius:7px; opacity:1; box-shadow:inset 0 0 12px #080908,0 1px white; text-shadow:0 0 8px rgba(201,255,53,.42); }
+.fridge-handle { position:absolute; right:26px; top:215px; z-index:5; width:24px; height:430px; display:flex; flex-direction:column; align-items:center; color:rgba(17,19,15,.42); }
+.fridge-handle>span { width:18px; flex:1; border-radius:20px; background:linear-gradient(90deg,#6c6f6c,#e2e3e1 42%,#858886); border:1px solid #747774; box-shadow:-5px 7px 12px rgba(0,0,0,.23),inset 2px 0 2px rgba(255,255,255,.75); }
+.fridge-handle small { margin-top:12px; font:700 6px var(--font-geist-mono),monospace; letter-spacing:.2em; writing-mode:vertical-rl; }
+.fridge-readout { position:absolute; left:25px; top:181px; z-index:5; width:46px; padding:11px 7px; color:#c9ff35; background:#171a16; border:3px solid #777a78; border-radius:9px; display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; box-shadow:inset 0 0 14px #050605,0 2px 5px rgba(0,0,0,.18); }
+.fridge-readout div { display:flex; flex-direction:column; }.fridge-readout strong { font:600 13px var(--font-geist-mono),monospace; }.fridge-readout small { font:600 5px var(--font-geist-mono),monospace; letter-spacing:.1em; opacity:.55; }.fridge-readout>span { width:20px; height:1px; background:#474b44; }
+.hero { width:auto; max-width:none; min-height:655px; margin:28px 78px 0; padding:90px 5vw 88px; overflow:hidden; color:white; background:radial-gradient(circle at 83% 45%,rgba(201,255,53,.1),transparent 27%),linear-gradient(145deg,#181b16,#0b0d0a 72%); border:11px solid #292c28; border-bottom:0; border-radius:32px 32px 0 0; box-shadow:inset 0 0 0 1px #4c5049,inset 0 0 90px rgba(0,0,0,.72),0 16px 35px rgba(0,0,0,.27); }
+.hero:before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.18; background:linear-gradient(rgba(201,255,53,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(201,255,53,.08) 1px,transparent 1px); background-size:44px 44px; mask-image:linear-gradient(to bottom,black,transparent 78%); }
+.display-status { position:absolute; top:25px; left:5vw; right:5vw; display:flex; justify-content:space-between; font:600 8px var(--font-geist-mono),monospace; letter-spacing:.14em; color:#aeb2aa; }
+.display-status span { display:flex; gap:7px; align-items:center; }.display-status svg { color:var(--acid); }
+.eyebrow { color:var(--acid); }.eyebrow svg { color:var(--acid); }
+.hero h1 { color:white; font-size:clamp(62px,8.8vw,134px); text-shadow:0 0 38px rgba(255,255,255,.035); }
+.hero h1 em { -webkit-text-stroke:1.5px var(--acid); }
+.hero>p { color:rgba(255,255,255,.6); }
+.scan-primary { background:var(--acid); color:var(--ink); box-shadow:0 0 0 1px #e5ff99,0 0 35px rgba(201,255,53,.2); }.scan-primary>span { background:var(--ink); color:white; }
+.scan-hint { color:white; opacity:.48; }
+.orbit-ring { border-color:rgba(201,255,53,.37); }.orbit-ring:before,.orbit-ring:after { border-color:rgba(201,255,53,.14); }.orbit-ring:after { background:rgba(201,255,53,.025); }.orbit-core { border-color:var(--acid); box-shadow:0 0 65px rgba(201,255,53,.3); }.tag-two { background:#242721; color:white; border-color:#555a51; }
+.inventory-section { margin:0 78px 54px; border:11px solid #292c28; border-top:0; border-radius:0 0 32px 32px; padding:30px 4.5vw 90px; box-shadow:inset 0 0 0 1px #4c5049,inset 0 -20px 70px rgba(0,0,0,.28),0 22px 35px rgba(0,0,0,.25); }
+.stats-row { transform:translateY(-20px); border-radius:12px; background:#42463e; border-color:#42463e; box-shadow:0 13px 35px rgba(0,0,0,.32); }
+.stat-card { background:#242721; }.stat-card.featured { background:var(--acid); }
+.item-card { box-shadow:0 5px 0 #a2a197,0 10px 20px rgba(0,0,0,.19); transform:rotate(var(--card-tilt,0deg)); }.item-card:nth-child(3n+1){--card-tilt:-.35deg}.item-card:nth-child(3n+2){--card-tilt:.25deg}
+footer { margin:0 78px 54px; min-height:70px; border-radius:13px; color:#252825; background:linear-gradient(#dadbd9,#afb1af); border:1px solid #8e918e; box-shadow:inset 0 1px white,0 3px 10px rgba(0,0,0,.13); }
+footer .brand-mark span { background:#555; }
+
+@media (max-width:1000px) {
+  .hero,.inventory-section,footer { margin-left:55px; margin-right:55px; }
+  .hero { min-height:660px; }.fridge-readout { left:12px; }.fridge-handle { right:14px; }
+}
+@media (max-width:700px) {
+  body { padding:0; }.app-shell { min-height:100vh; border:0; border-radius:0; box-shadow:none; }.app-shell:before,.app-shell:after,.fridge-readout,.fridge-handle { display:none; }
+  .topbar { height:70px; padding:0 14px; }.topbar .brand { padding:7px 10px; }.top-status{display:none}
+  .hero { margin:12px 12px 0; padding:72px 18px 330px; min-height:auto; border-width:7px; border-bottom:0; border-radius:23px 23px 0 0; }
+  .display-status { top:20px; left:18px; right:18px; }.hero h1 { font-size:clamp(51px,17vw,78px); }.hero>p { color:rgba(255,255,255,.62); }
+  .inventory-section { margin:0 12px 20px; padding:25px 12px 60px; border-width:7px; border-top:0; border-radius:0 0 23px 23px; }
+  footer { margin:0 12px 12px; padding:24px 18px; }
+}

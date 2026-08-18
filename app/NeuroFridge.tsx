@@ -14,7 +14,10 @@ import {
   Plus,
   Search,
   Share2,
+  Snowflake,
   Sparkles,
+  Thermometer,
+  Wifi,
   X,
   Zap,
 } from "lucide-react";
@@ -227,8 +230,13 @@ export default function NeuroFridge() {
         <div className="top-status"><span className="live-dot" /> SYSTEM ONLINE <span className="divider" /> {clock}</div>
         <button className="share-btn" onClick={() => setShareOpen(true)}><Share2 size={16} /> Share fridge</button>
       </header>
+      <aside className="fridge-readout" aria-label="Fridge status">
+        <Snowflake size={15} /><div><strong>37°</strong><small>FRIDGE</small></div><span /><div><strong>0°</strong><small>FREEZER</small></div>
+      </aside>
+      <div className="fridge-handle" aria-hidden="true"><span /><small>PULL</small></div>
 
       <section className="hero" id="top">
+        <div className="display-status"><span><Wifi size={13} /> HOME FRIDGE</span><span><Thermometer size={13} /> 37°F</span></div>
         <div className="eyebrow"><Sparkles size={14} /> YOUR KITCHEN, IN SYNC</div>
         <h1>KNOW WHAT’S<br /><em>INSIDE.</em></h1>
         <p>Point. Scan. Done. Neuro keeps a live count of every item in your fridge, wherever you are.</p>

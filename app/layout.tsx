@@ -19,13 +19,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Neuro Fridge — Know What’s Inside",
     description: "Scan a barcode and keep your shared fridge inventory in sync.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Neuro Fridge barcode scanner interface" }],
+    images: [{ url: "/og-fridge.png", width: 1200, height: 630, alt: "Neuro Fridge smart refrigerator interface" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Neuro Fridge — Know What’s Inside",
     description: "Scan a barcode and keep your shared fridge inventory in sync.",
-    images: ["/og.png"],
+    images: ["/og-fridge.png"],
   },
   icons: {
     icon: "/favicon.svg",
