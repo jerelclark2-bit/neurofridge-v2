@@ -50,6 +50,9 @@ export default function NeuroFridge() {
   const [toast, setToast] = useState("");
   const [shareOpen, setShareOpen] = useState(false);
   const [loadingText, setLoadingText] = useState("");
+  const [pendingBarcode, setPendingBarcode] = useState("");
+  const [customName, setCustomName] = useState("");
+  const [customBrand, setCustomBrand] = useState("");
   const [clock, setClock] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsRef = useRef<{ stop: () => void } | null>(null);
@@ -95,7 +98,26 @@ export default function NeuroFridge() {
     setScanning(false);
     setScannerOpen(false);
     setLoadingText("");
+    setPendingBarcode("");
+    setCustomName("");
+    setCustomBrand("");
   }, []);
+
+  const addProduct = useCallback(async (product: Item) => {
+    const response = await fetch("/api/inventory", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fridgeId: FRIDGE_ID, ...product, quantity: 1 }),
+    });
+    if (!response.ok) throw new Error("save-failed");
+    const saved = (await response.json()).item as Item;
+    setItems((current) => {
+      const found = current.some((item) => item.barcode === product.barcode);
+      return found ? current.map((item) => item.barcode === product.barcode ? saved : item) : [saved, ...current];
+    });
+    closeScanner();
+    notify(`${saved.brand} ${saved.name} · +1 added`);
+  }, [closeScanner]);
 
   const scanBarcode = useCallback(async (barcode: string) => {
     const clean = barcode.trim();
@@ -104,39 +126,56 @@ export default function NeuroFridge() {
     controlsRef.current?.stop();
     try {
       const existing = items.find((item) => item.barcode === clean);
-      let product = existing;
-      if (!product) {
-        const lookup = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(clean)}.json?fields=code,product_name,brands,image_front_small_url,categories_tags_en`);
-        const data = await lookup.json();
-        if (data.status !== 1 || !data.product?.product_name) throw new Error("not-found");
-        product = {
-          id: 0,
-          barcode: clean,
-          name: data.product.product_name,
-          brand: data.product.brands?.split(",")[0] || "Unknown brand",
-          imageUrl: data.product.image_front_small_url || "",
-          category: data.product.categories_tags_en?.[0] || "Groceries",
-          quantity: 0,
-          updatedAt: new Date().toISOString(),
-        };
+      if (existing) {
+        await addProduct(existing);
+        return;
       }
-      const response = await fetch("/api/inventory", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fridgeId: FRIDGE_ID, ...product, quantity: 1 }),
+      const lookup = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(clean)}.json?fields=code,product_name,brands,image_front_small_url,categories_tags_en`);
+      const data = await lookup.json();
+      if (data.status !== 1 || !data.product?.product_name) throw new Error("not-found");
+      await addProduct({
+        id: 0,
+        barcode: clean,
+        name: data.product.product_name,
+        brand: data.product.brands?.split(",")[0] || "Unknown brand",
+        imageUrl: data.product.image_front_small_url || "",
+        category: data.product.categories_tags_en?.[0] || "Groceries",
+        quantity: 0,
+        updatedAt: new Date().toISOString(),
       });
-      const saved = response.ok ? (await response.json()).item : { ...product, id: product.id || Date.now(), quantity: product.quantity + 1 };
-      setItems((current) => {
-        const found = current.some((item) => item.barcode === clean);
-        return found ? current.map((item) => item.barcode === clean ? saved : item) : [saved, ...current];
+    } catch (error) {
+      setLoadingText("");
+      controlsRef.current?.stop();
+      controlsRef.current = null;
+      setScanning(false);
+      if (error instanceof Error && error.message === "save-failed") {
+        notify("Couldn’t save that item. Please try again.");
+        return;
+      }
+      setPendingBarcode(clean);
+      setManualCode(clean);
+    }
+  }, [addProduct, items, loadingText]);
+
+  const addCustomBarcode = async () => {
+    if (!customName.trim()) return;
+    setLoadingText("Adding your item…");
+    try {
+      await addProduct({
+        id: 0,
+        barcode: pendingBarcode,
+        name: customName.trim(),
+        brand: customBrand.trim() || "Custom item",
+        imageUrl: "",
+        category: "Groceries",
+        quantity: 0,
+        updatedAt: new Date().toISOString(),
       });
-      closeScanner();
-      notify(`${saved.brand} ${saved.name} · +1 added`);
     } catch {
       setLoadingText("");
-      notify("Barcode not found. Try another side of the package.");
+      notify("Couldn’t save that item. Please try again.");
     }
-  }, [closeScanner, items, loadingText]);
+  };
 
   const startCamera = useCallback(async () => {
     if (!videoRef.current) return;
@@ -233,15 +272,21 @@ export default function NeuroFridge() {
 
       {scannerOpen && <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Barcode scanner">
         <div className="scanner-modal">
-          <div className="modal-head"><div><span>SCAN MODE</span><h2>Show me the barcode.</h2></div><button aria-label="Close scanner" onClick={closeScanner}><X /></button></div>
-          <div className={`camera-stage ${scanning ? "is-live" : ""}`}>
+          <div className="modal-head"><div><span>{pendingBarcode ? "NEW BARCODE" : "SCAN MODE"}</span><h2>{pendingBarcode ? "Tell us what it is." : "Show me the barcode."}</h2></div><button aria-label="Close scanner" onClick={closeScanner}><X /></button></div>
+          {!pendingBarcode ? <><div className={`camera-stage ${scanning ? "is-live" : ""}`}>
             <video ref={videoRef} muted playsInline />
             <div className="scan-frame"><i /><i /><i /><i /><div className="laser" /></div>
             {!scanning && <div className="camera-empty"><div className="camera-icon"><Camera size={32} /></div><p>Your camera is only used while scanning.</p><button onClick={startCamera}><Camera size={18} /> Turn on camera</button></div>}
             {loadingText && <div className="loading-chip"><span />{loadingText}</div>}
           </div>
-          <div className="manual-entry"><span>OR ENTER THE NUMBERS</span><div><Barcode size={19} /><input inputMode="numeric" placeholder="e.g. 082657700025" value={manualCode} onChange={(e) => setManualCode(e.target.value.replace(/\D/g, ""))} onKeyDown={(e) => e.key === "Enter" && scanBarcode(manualCode)} /><button onClick={() => scanBarcode(manualCode)} disabled={!manualCode}><ChevronRight /></button></div></div>
-          <p className="scanner-note"><Check size={14} /> Powered by Open Food Facts global product data</p>
+          <div className="manual-entry"><span>OR ENTER ANY BARCODE</span><div><Barcode size={19} /><input inputMode="text" autoComplete="off" placeholder="e.g. 082657700025" value={manualCode} onChange={(e) => setManualCode(e.target.value.slice(0, 64))} onKeyDown={(e) => e.key === "Enter" && scanBarcode(manualCode)} /><button onClick={() => scanBarcode(manualCode)} disabled={!manualCode.trim()}><ChevronRight /></button></div></div>
+          <p className="scanner-note"><Check size={14} /> Known products autofill. Every other barcode can be added manually.</p></> :
+          <div className="custom-product-form">
+            <div className="barcode-confirmed"><span><Check size={16} /></span><div><small>BARCODE CAPTURED</small><code>{pendingBarcode}</code></div></div>
+            <label><span>ITEM NAME *</span><input autoFocus value={customName} onChange={(e) => setCustomName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCustomBarcode()} placeholder="What is this item?" /></label>
+            <label><span>BRAND <em>OPTIONAL</em></span><input value={customBrand} onChange={(e) => setCustomBrand(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCustomBarcode()} placeholder="Brand or maker" /></label>
+            <div className="custom-actions"><button className="back-to-scan" onClick={() => { setPendingBarcode(""); setLoadingText(""); }}>Scan again</button><button className="add-custom" onClick={addCustomBarcode} disabled={!customName.trim() || !!loadingText}><Plus size={17} />{loadingText || "Add to fridge"}</button></div>
+          </div>}
         </div>
       </div>}
 
