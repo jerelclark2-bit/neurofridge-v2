@@ -56,6 +56,10 @@ export default function NeuroFridge() {
   const [pendingBarcode, setPendingBarcode] = useState("");
   const [customName, setCustomName] = useState("");
   const [customBrand, setCustomBrand] = useState("");
+  const [doorOpen, setDoorOpen] = useState(false);
+  const [motionEnabled, setMotionEnabled] = useState(true);
+  const [fridgeTemp, setFridgeTemp] = useState(37);
+  const [freezerTemp, setFreezerTemp] = useState(0);
   const [clock, setClock] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsRef = useRef<{ stop: () => void } | null>(null);
@@ -75,20 +79,33 @@ export default function NeuroFridge() {
   }, []);
 
   useEffect(() => {
+    if (!motionEnabled) {
+      document.documentElement.style.setProperty("--fridge-rx", "0deg");
+      document.documentElement.style.setProperty("--fridge-ry", "0deg");
+      return;
+    }
     const move = (event: PointerEvent) => {
       document.documentElement.style.setProperty("--mx", `${event.clientX}px`);
       document.documentElement.style.setProperty("--my", `${event.clientY}px`);
       document.documentElement.style.setProperty("--rx", `${(event.clientY / innerHeight - .5) * -3}deg`);
       document.documentElement.style.setProperty("--ry", `${(event.clientX / innerWidth - .5) * 4}deg`);
+      document.documentElement.style.setProperty("--fridge-rx", `${(event.clientY / innerHeight - .5) * -1.8}deg`);
+      document.documentElement.style.setProperty("--fridge-ry", `${(event.clientX / innerWidth - .5) * 2.4}deg`);
     };
     const tilt = (event: DeviceOrientationEvent) => {
-      if (event.gamma != null) document.documentElement.style.setProperty("--ry", `${Math.max(-4, Math.min(4, event.gamma / 10))}deg`);
-      if (event.beta != null) document.documentElement.style.setProperty("--rx", `${Math.max(-3, Math.min(3, (event.beta - 45) / 15))}deg`);
+      if (event.gamma != null) {
+        document.documentElement.style.setProperty("--ry", `${Math.max(-4, Math.min(4, event.gamma / 10))}deg`);
+        document.documentElement.style.setProperty("--fridge-ry", `${Math.max(-2.5, Math.min(2.5, event.gamma / 14))}deg`);
+      }
+      if (event.beta != null) {
+        document.documentElement.style.setProperty("--rx", `${Math.max(-3, Math.min(3, (event.beta - 45) / 15))}deg`);
+        document.documentElement.style.setProperty("--fridge-rx", `${Math.max(-2, Math.min(2, (event.beta - 45) / 20))}deg`);
+      }
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("deviceorientation", tilt);
     return () => { window.removeEventListener("pointermove", move); window.removeEventListener("deviceorientation", tilt); };
-  }, []);
+  }, [motionEnabled]);
 
   const notify = (message: string) => {
     setToast(message);
@@ -222,18 +239,41 @@ export default function NeuroFridge() {
   }), [filter, items, query]);
   const total = items.reduce((sum, item) => sum + item.quantity, 0);
 
+  const adjustTemperature = (zone: "fridge" | "freezer", delta: number) => {
+    if (zone === "fridge") {
+      const next = Math.max(33, Math.min(42, fridgeTemp + delta));
+      setFridgeTemp(next);
+      notify(`Fridge temperature set to ${next}°F`);
+    } else {
+      const next = Math.max(-6, Math.min(5, freezerTemp + delta));
+      setFreezerTemp(next);
+      notify(`Freezer temperature set to ${next}°F`);
+    }
+  };
+
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${doorOpen ? "door-open" : ""} ${motionEnabled ? "motion-on" : "motion-off"}`}>
+      <section className="fridge-interior" aria-hidden={!doorOpen}>
+        <div className="interior-head"><div><Snowflake size={20} /><span>NEURO FRESH ZONE</span></div><button onClick={() => setDoorOpen(false)}>Close door</button></div>
+        <div className="cold-air"><i /><i /><i /><span>37°F</span></div>
+        <div className="glass-shelf shelf-top">{items.slice(0, 3).map((item) => <button key={item.barcode} onClick={() => { setDoorOpen(false); notify(`${item.name} · ${item.quantity} in stock`); }}><b>{item.brand.slice(0, 2).toUpperCase()}</b><span>{item.name}</span><em>×{item.quantity}</em></button>)}</div>
+        <div className="glass-shelf shelf-bottom">{items.slice(3, 6).map((item) => <button key={item.barcode} onClick={() => { setDoorOpen(false); notify(`${item.name} · ${item.quantity} in stock`); }}><b>{item.brand.slice(0, 2).toUpperCase()}</b><span>{item.name}</span><em>×{item.quantity}</em></button>)}</div>
+        <div className="crisper-drawer"><span>FRESH DRAWER</span><strong>Humidity / 72%</strong></div>
+      </section>
+      <div className="fridge-door-face">
       <div className="ambient ambient-a" /><div className="ambient ambient-b" /><div className="cursor-glow" />
       <header className="topbar">
         <a className="brand" href="#top" aria-label="Neuro Fridge home"><span className="brand-mark"><span /></span><b>NEURO</b><span>/ FRIDGE</span></a>
-        <div className="top-status"><span className="live-dot" /> SYSTEM ONLINE <span className="divider" /> {clock}</div>
+        <button className="top-status" onClick={() => { setMotionEnabled((value) => !value); notify(`Motion ${motionEnabled ? "paused" : "enabled"}`); }} title="Toggle motion effects"><span className="live-dot" /> MOTION {motionEnabled ? "ON" : "OFF"} <span className="divider" /> {clock}</button>
         <button className="share-btn" onClick={() => setShareOpen(true)}><Share2 size={16} /> Share fridge</button>
       </header>
-      <aside className="fridge-readout" aria-label="Fridge status">
-        <Snowflake size={15} /><div><strong>37°</strong><small>FRIDGE</small></div><span /><div><strong>0°</strong><small>FREEZER</small></div>
+      <aside className="fridge-readout" aria-label="Temperature controls">
+        <Snowflake size={15} />
+        <div className="temp-zone"><button aria-label="Lower fridge temperature" onClick={() => adjustTemperature("fridge", -1)}><Minus size={9} /></button><strong>{fridgeTemp}°</strong><button aria-label="Raise fridge temperature" onClick={() => adjustTemperature("fridge", 1)}><Plus size={9} /></button><small>FRIDGE</small></div>
+        <span />
+        <div className="temp-zone"><button aria-label="Lower freezer temperature" onClick={() => adjustTemperature("freezer", -1)}><Minus size={9} /></button><strong>{freezerTemp}°</strong><button aria-label="Raise freezer temperature" onClick={() => adjustTemperature("freezer", 1)}><Plus size={9} /></button><small>FREEZER</small></div>
       </aside>
-      <div className="fridge-handle" aria-hidden="true"><span /><small>PULL</small></div>
+      <button className="fridge-handle" aria-label={doorOpen ? "Close fridge door" : "Open fridge door"} onClick={() => setDoorOpen((value) => !value)}><span /><small>{doorOpen ? "CLOSE" : "PULL"}</small></button>
 
       <section className="hero" id="top">
         <div className="display-status"><span><Wifi size={13} /> HOME FRIDGE</span><span><Thermometer size={13} /> 37°F</span></div>
@@ -244,7 +284,7 @@ export default function NeuroFridge() {
           <button className="scan-primary" onClick={() => setScannerOpen(true)}><span><Camera size={22} /></span> Scan an item <ArrowUpRight size={18} /></button>
           <span className="scan-hint"><Barcode size={18} /> Each scan adds <b>+1</b></span>
         </div>
-        <div className="hero-orbit" aria-hidden="true"><div className="orbit-ring" /><div className="orbit-core"><Barcode size={48} /><small>READY TO SCAN</small></div><span className="orbit-tag tag-one">LIVE INVENTORY</span><span className="orbit-tag tag-two">{total} UNITS</span></div>
+        <div className="hero-orbit"><div className="orbit-ring" /><button className="orbit-core" onClick={() => setScannerOpen(true)} aria-label="Open barcode scanner"><Barcode size={48} /><small>TAP TO SCAN</small></button><button className="orbit-tag tag-one" onClick={() => document.querySelector(".inventory-section")?.scrollIntoView({ behavior: "smooth" })}>LIVE INVENTORY</button><button className="orbit-tag tag-two" onClick={() => document.querySelector(".inventory-section")?.scrollIntoView({ behavior: "smooth" })}>{total} UNITS</button></div>
       </section>
 
       <section className="inventory-section">
@@ -277,6 +317,7 @@ export default function NeuroFridge() {
       </section>
 
       <footer><div className="brand"><span className="brand-mark"><span /></span><b>NEURO</b><span>/ FRIDGE</span></div><p>One shared fridge. Always up to date.</p><span>PROTOTYPE / 2026</span></footer>
+      </div>
 
       {scannerOpen && <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Barcode scanner">
         <div className="scanner-modal">
