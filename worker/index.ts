@@ -27,7 +27,7 @@ const CONTENT_SECURITY_POLICY = [
   "form-action 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https:",
+  "img-src 'self' data: https://images.openfoodfacts.org https://upload.wikimedia.org https://i.imgur.com https://images.unsplash.com",
   "media-src 'self' blob:",
   "connect-src 'self' https://world.openfoodfacts.org",
   "font-src 'self' data:",

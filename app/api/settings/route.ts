@@ -6,6 +6,7 @@ import {
   ApiError,
   FRIDGE_FINISHES,
   PUBLIC_FRIDGE_ID,
+  STICKER_IMAGE_HOSTS,
   assertSameOrigin,
   cleanHttpsUrl,
   cleanString,
@@ -47,7 +48,7 @@ function parseStickers(value: unknown): Sticker[] {
         maxLength: 64,
         fallback: crypto.randomUUID(),
       }),
-      url: cleanHttpsUrl(sticker.url, "Sticker URL"),
+      url: cleanHttpsUrl(sticker.url, "Sticker URL", { allowedHosts: STICKER_IMAGE_HOSTS }),
       label: cleanString(sticker.label, "Sticker label", {
         maxLength: 40,
         fallback: "My sticker",

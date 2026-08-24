@@ -11,6 +11,12 @@ export const FRIDGE_SECTIONS = [
 ] as const;
 
 export const FRIDGE_FINISHES = ["steel", "black", "cream"] as const;
+export const PRODUCT_IMAGE_HOSTS = ["images.openfoodfacts.org"] as const;
+export const STICKER_IMAGE_HOSTS = [
+  "upload.wikimedia.org",
+  "i.imgur.com",
+  "images.unsplash.com",
+] as const;
 
 type JsonRecord = Record<string, unknown>;
 
@@ -125,17 +131,25 @@ export function cleanNumber(
   return value;
 }
 
-export function cleanHttpsUrl(value: unknown, field: string, maxLength = 2048) {
-  const cleaned = cleanString(value, field, { maxLength });
+export function cleanHttpsUrl(
+  value: unknown,
+  field: string,
+  options: { maxLength?: number; allowedHosts?: readonly string[] } = {},
+) {
+  const cleaned = cleanString(value, field, { maxLength: options.maxLength || 2048 });
   if (!cleaned) return "";
   try {
     const url = new URL(cleaned);
     if (url.protocol !== "https:") throw new Error("HTTPS required");
+    const hostname = url.hostname.toLowerCase();
+    if (options.allowedHosts && !options.allowedHosts.some((host) => hostname === host)) {
+      throw new Error("Host is not allowed");
+    }
     url.username = "";
     url.password = "";
     return url.toString();
   } catch {
-    throw new ApiError(400, `${field} must be a valid HTTPS URL`);
+    throw new ApiError(400, `${field} must use an approved HTTPS image host`);
   }
 }
 

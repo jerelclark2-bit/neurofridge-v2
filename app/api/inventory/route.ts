@@ -5,6 +5,7 @@ import { inventoryItems } from "../../../db/schema";
 import {
   ApiError,
   FRIDGE_SECTIONS,
+  PRODUCT_IMAGE_HOSTS,
   PUBLIC_FRIDGE_ID,
   assertSameOrigin,
   cleanHttpsUrl,
@@ -93,7 +94,9 @@ export async function POST(request: Request) {
       maxLength: 80,
       fallback: "Unknown brand",
     });
-    const imageUrl = cleanHttpsUrl(body.imageUrl, "Image URL");
+    const imageUrl = cleanHttpsUrl(body.imageUrl, "Image URL", {
+      allowedHosts: PRODUCT_IMAGE_HOSTS,
+    });
     const category = cleanString(body.category, "Category", {
       maxLength: 160,
       fallback: "Groceries",

@@ -22,6 +22,9 @@ test("public mutations enforce origin, limits, validation, and safe errors", asy
   assert.match(inventory, /MAX_UNIQUE_ITEMS = 200/);
   assert.match(inventory, /max: 99/);
   assert.match(settings, /maximum of 8 stickers/i);
+  assert.match(security, /PRODUCT_IMAGE_HOSTS/);
+  assert.match(security, /STICKER_IMAGE_HOSTS/);
+  assert.match(security, /Host is not allowed/);
   assert.match(security, /SHA-256/);
   assert.match(security, /Too many requests/);
 });
@@ -40,4 +43,5 @@ test("worker sends defense-in-depth browser headers", async () => {
   }
   assert.match(worker, /frame-ancestors 'none'/);
   assert.match(worker, /camera=\(self\)/);
+  assert.doesNotMatch(worker, /img-src[^\n]*https:\s*["']/);
 });
