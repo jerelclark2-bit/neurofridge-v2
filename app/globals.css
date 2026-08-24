@@ -160,3 +160,96 @@ html,body{background:#0d0f0c}body{padding:0;perspective:none}.neuro-app{--steel:
 @keyframes fridgeDeploy{from{opacity:0;transform:translateX(30px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes dockWake{from{box-shadow:inset 0 0 0 rgba(201,255,53,0)}to{box-shadow:inset -18px 0 45px rgba(201,255,53,.035)}}
 @media(prefers-reduced-motion:reduce){.fridge-workspace,.scan-dock.active{animation:none}.closed-fridge:hover,.shelf-item:hover{transform:none}}
+
+/* Landing fridge dashboard: high-contrast, useful, and responsive. */
+.nf-home{
+  min-height:calc(100vh - 72px);
+  grid-template-columns:minmax(0,1.05fr) minmax(390px,.78fr);
+  gap:clamp(38px,6vw,92px);
+  padding:64px clamp(28px,7vw,110px);
+  background:
+    radial-gradient(circle at 18% 24%,rgba(201,255,53,.16),transparent 30%),
+    radial-gradient(circle at 83% 68%,rgba(255,255,255,.07),transparent 25%),
+    linear-gradient(135deg,#141812,#0b0e0a 72%);
+}
+.home-copy{max-width:690px;position:relative;z-index:2}
+.home-copy h1{font-size:clamp(58px,7vw,106px);text-wrap:balance}
+.home-copy p{color:#c0c5bb;max-width:520px;font-size:16px}
+.home-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-width:510px;margin-top:30px}
+.home-stats>div{min-height:84px;padding:15px 16px;border:1px solid #3c4239;border-radius:13px;background:rgba(255,255,255,.055);box-shadow:inset 0 1px rgba(255,255,255,.04);display:flex;flex-direction:column;justify-content:center}
+.home-stats strong{font:650 24px var(--font-geist-mono);color:#f6f7f1}
+.home-stats span{margin-top:5px;color:#9ca295;font-size:10px}
+.home-stats .needs-attention{border-color:#98b934;background:rgba(201,255,53,.09)}
+.home-stats .needs-attention strong{color:var(--acid)}
+.launch-scan{min-width:244px;margin-top:24px;padding:8px 18px 8px 8px;border:1px solid #dfe2d9;background:#f4f5ef;color:#111510;box-shadow:0 15px 40px rgba(0,0,0,.28);transition:transform .2s,background .2s,box-shadow .2s}
+.launch-scan span{background:var(--acid);color:#111510;border:1px solid #9fca29}
+.launch-scan svg:last-child{margin-left:auto}
+.launch-scan:hover{transform:translateY(-3px);background:white;box-shadow:0 19px 48px rgba(0,0,0,.36)}
+.launch-scan:focus-visible,.door-scan-button:focus-visible,.open-door-button:focus-visible{outline:3px solid var(--acid);outline-offset:3px}
+
+.closed-fridge{height:610px;max-width:470px;border-radius:32px 32px 12px 12px;border:2px solid #858a82;box-shadow:27px 38px 85px rgba(0,0,0,.55),inset 2px 0 rgba(255,255,255,.5),inset -1px 0 rgba(0,0,0,.28);overflow:hidden}
+.closed-fridge:before{content:"";position:absolute;inset:1px;border-radius:29px 29px 9px 9px;pointer-events:none;background:linear-gradient(110deg,rgba(255,255,255,.12),transparent 18%,transparent 76%,rgba(0,0,0,.14))}
+.fridge-brand-row{position:absolute;z-index:3;left:29px;right:63px;top:25px;display:flex;align-items:center;justify-content:space-between}
+.fridge-logo{position:static;color:#111510;font-size:12px;letter-spacing:.22em}
+.fridge-brand-row>span{display:flex;align-items:center;gap:6px;font:700 7px var(--font-geist-mono);letter-spacing:.13em;color:#3e443c}
+.fridge-brand-row i{width:7px;height:7px;border-radius:50%;background:#78a400;box-shadow:0 0 8px rgba(120,164,0,.55)}
+.closed-screen{top:75px;left:29px;width:167px;height:91px;padding:15px 17px;border-width:5px;border-color:#989c95;border-radius:12px}
+.closed-screen b{font-size:25px}
+.closed-screen small{font-size:7px;opacity:.75}
+.sticker-layer{z-index:3;inset:76px 65px auto 215px;height:94px;gap:8px;overflow:hidden;justify-content:flex-end}
+.sticker-layer img{width:44px;height:44px}
+.door-dashboard{position:absolute;z-index:2;left:29px;right:64px;top:190px;bottom:88px;padding:18px;border:1px solid rgba(17,21,16,.2);border-radius:18px;background:linear-gradient(145deg,#f6f7f0,#dfe2da);color:#111510;box-shadow:0 14px 30px rgba(0,0,0,.2),inset 0 1px white;display:flex;flex-direction:column}
+.door-dashboard-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #c9cdc4}
+.door-dashboard-head span{font:750 8px var(--font-geist-mono);letter-spacing:.16em}
+.door-dashboard-head b{font-size:10px;color:#5c6259}
+.door-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:13px 0}
+.door-section{height:40px;padding:0 11px;border:1px solid #cfd2ca;border-radius:9px;background:#e7e9e2;color:#8a8f86;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.door-section span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px}
+.door-section b{font:700 10px var(--font-geist-mono)}
+.door-section.active{border-color:#a6c94a;background:#efffd0;color:#1b2017}
+.door-section.active b{color:#557400}
+.door-scan-button{height:41px;margin-top:auto;padding:0 12px;border:1px solid #111510;border-radius:10px;background:#171b16;color:white;display:flex;align-items:center;gap:8px;cursor:pointer;font-size:10px;font-weight:750;transition:background .18s,color .18s,transform .18s}
+.door-scan-button svg:first-child{color:var(--acid)}
+.door-scan-button svg:last-child{margin-left:auto}
+.door-scan-button:hover{background:var(--acid);color:#111510;transform:translateY(-2px)}
+.door-scan-button:hover svg{color:#111510}
+.closed-handle{z-index:3;right:20px;top:76px;height:438px;width:15px;border:1px solid #666a65}
+.open-door-button{z-index:3;bottom:21px;min-width:142px;justify-content:center;border-color:#5e625d;background:#f1f2ec;color:#151815;box-shadow:0 7px 17px rgba(0,0,0,.22);font-weight:700}
+.open-door-button:hover{background:var(--acid)}
+.finish-black .closed-fridge{background:linear-gradient(110deg,#363a35,#1f231f 35%,#292d28 72%,#171a17);border-color:#858b82;box-shadow:27px 38px 90px rgba(0,0,0,.72),inset 2px 0 rgba(255,255,255,.18),inset -1px 0 rgba(0,0,0,.5)}
+.finish-black .fridge-logo{color:#f4f5ef;text-shadow:0 1px 10px rgba(255,255,255,.1)}
+.finish-black .fridge-brand-row>span{color:#d2d6ce}
+.finish-black .fridge-brand-row i{background:var(--acid);box-shadow:0 0 10px var(--acid)}
+.finish-black .closed-screen{border-color:#b3b7b0}
+
+@media(max-width:980px){
+  .nf-home{grid-template-columns:1fr;padding-top:58px;padding-bottom:78px}
+  .home-copy{max-width:760px}
+  .home-copy h1{font-size:clamp(62px,10vw,96px)}
+  .closed-fridge{width:min(520px,100%);max-width:520px}
+}
+@media(max-width:720px){
+  .nf-home{padding:48px 20px 62px;gap:48px}
+  .home-copy h1{font-size:clamp(50px,14vw,68px);margin:18px 0 22px}
+  .home-copy p{font-size:14px}
+  .home-stats{margin-top:23px}
+  .home-stats>div{min-height:72px;padding:12px}
+  .home-stats strong{font-size:20px}
+  .home-stats span{font-size:9px}
+  .launch-scan{width:100%;min-width:0}
+  .closed-fridge{height:560px;max-width:440px}
+  .door-dashboard{top:181px;bottom:82px}
+  .closed-handle{height:405px}
+}
+@media(max-width:420px){
+  .home-stats{gap:6px}
+  .home-stats>div{padding:10px 9px}
+  .closed-fridge{height:545px}
+  .closed-screen{width:150px}
+  .sticker-layer{left:194px}
+  .door-dashboard{left:20px;right:55px;top:179px;padding:14px}
+  .fridge-brand-row{left:22px;right:54px}
+  .closed-screen{left:20px}
+  .door-sections{gap:5px}
+  .door-section{height:37px;padding:0 8px}
+}
