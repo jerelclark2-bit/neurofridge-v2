@@ -1,0 +1,17 @@
+name: Feature request
+description: Suggest an improvement for Neuro Fridge.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    attributes:
+      label: What should improve?
+      description: Explain the user need and desired behavior.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Why does it matter?
+      description: Describe who benefits and how.
+    validations:
+      required: true

@@ -2,6 +2,11 @@
 
 # dependencies
 /node_modules
+/.pnpm-store
+
+# python
+__pycache__/
+*.py[cod]
 /.pnp
 .pnp.*
 .yarn/*
@@ -38,3 +43,4 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+*.tsbuildinfo

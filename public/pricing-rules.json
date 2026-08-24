@@ -1,0 +1,80 @@
+{
+  "currency": "USD",
+  "rules": [
+    {
+      "section": "Drinks",
+      "keywords": [
+        "water",
+        "soda",
+        "juice",
+        "milk",
+        "tea",
+        "coffee",
+        "drink",
+        "beverage"
+      ],
+      "price": 4.49
+    },
+    {
+      "section": "Dairy & Eggs",
+      "keywords": [
+        "cheese",
+        "yogurt",
+        "egg",
+        "butter",
+        "cream",
+        "dairy"
+      ],
+      "price": 4.99
+    },
+    {
+      "section": "Deli & Meat",
+      "keywords": [
+        "salami",
+        "ham",
+        "turkey",
+        "chicken",
+        "beef",
+        "pork",
+        "sausage",
+        "meat",
+        "deli"
+      ],
+      "price": 7.49
+    },
+    {
+      "section": "Produce",
+      "keywords": [
+        "apple",
+        "banana",
+        "lettuce",
+        "tomato",
+        "fruit",
+        "vegetable",
+        "produce",
+        "berry",
+        "berries",
+        "strawberry",
+        "strawberries"
+      ],
+      "price": 3.29
+    },
+    {
+      "section": "Condiments",
+      "keywords": [
+        "sauce",
+        "ketchup",
+        "mustard",
+        "mayo",
+        "dressing",
+        "jam"
+      ],
+      "price": 3.99
+    },
+    {
+      "section": "Other",
+      "keywords": [],
+      "price": 3.99
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+name: Bug report
+description: Report something that is not working as expected.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How can we reproduce it?
+      description: Include the barcode and device or browser when relevant.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add screenshots or other useful details. Do not include private information.

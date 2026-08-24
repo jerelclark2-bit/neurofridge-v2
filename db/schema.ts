@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const inventoryItems = sqliteTable("inventory_items", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -9,6 +9,16 @@ export const inventoryItems = sqliteTable("inventory_items", {
   brand: text("brand").notNull().default("Unknown brand"),
   imageUrl: text("image_url").notNull().default(""),
   category: text("category").notNull().default("Groceries"),
+  section: text("section").notNull().default("Other"),
+  status: text("status").notNull().default("in"),
+  estimatedPrice: real("estimated_price").notNull().default(3.99),
   quantity: integer("quantity").notNull().default(1),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [uniqueIndex("idx_inventory_fridge_barcode").on(table.fridgeId, table.barcode)]);
+
+export const fridgeSettings = sqliteTable("fridge_settings", {
+  fridgeId: text("fridge_id").primaryKey(),
+  finish: text("finish").notNull().default("steel"),
+  stickersJson: text("stickers_json").notNull().default("[]"),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
