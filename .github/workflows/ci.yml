@@ -22,6 +22,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm pricing:test
+      - run: pnpm security:audit
       - run: pnpm pricing:generate
       - run: git diff --exit-code public/pricing-rules.json
+      - run: node --test tests/*.test.mjs
       - run: pnpm build

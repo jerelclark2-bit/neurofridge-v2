@@ -39,6 +39,12 @@ Camera video is processed on the visitor's device and is not recorded. Barcode n
 
 Product information is provided by [Open Food Facts](https://world.openfoodfacts.org/) and may be incomplete. Prices are editable estimates, not live store quotes.
 
+## Security
+
+Public mutations are restricted to the single shared fridge, checked for same-origin requests, validated and size-limited on the server, and protected by durable per-source rate limits. Destructive anonymous deletion is not exposed. Browser responses include CSP, framing, transport, referrer, content-type, and device-permission protections.
+
+The repository runs secret-history scanning, dependency auditing, CodeQL, and weekly dependency update checks. See [SECURITY.md](SECURITY.md) for private vulnerability reporting.
+
 ## License
 
 Released under the [MIT License](LICENSE).
