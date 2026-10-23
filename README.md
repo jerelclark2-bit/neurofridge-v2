@@ -1,6 +1,8 @@
-# Neuro Fridge
+# NeuroFridge V2
 
-Neuro Fridge is an interactive shared-fridge prototype. Scan any barcode, identify known products through Open Food Facts, place groceries into visual fridge sections, and keep a replacement-cost estimate in one place.
+NeuroFridge V2 is an interactive shared-fridge prototype. Scan any barcode, identify known products through Open Food Facts, place groceries into visual fridge sections, and keep a replacement-cost estimate in one place.
+
+**Live project:** [neuro-fridge-home.jerelclark-2.chatgpt.site](https://neuro-fridge-home.jerelclark-2.chatgpt.site/)
 
 ## What it does
 
